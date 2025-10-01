@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { WikipediaArticle, WikipediaSearchResult } from '../types/game';
 import { WikipediaAPI } from '../utils/wikipedia';
+import { WikiViewer } from './WikiViewer';
 
 interface GameSetupProps {
   onStartGame: (startArticle: WikipediaArticle, endArticle: WikipediaArticle) => void;
@@ -13,6 +14,8 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onStartGame }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchType, setSearchType] = useState<'start' | 'end'>('start');
   const [isLoading, setIsLoading] = useState(false);
+  const [previewArticle, setPreviewArticle] = useState<WikipediaArticle | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -63,6 +66,16 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onStartGame }) => {
 
   const canStartGame = startArticle && endArticle && startArticle.pageid !== endArticle.pageid;
 
+  const handlePreviewArticle = (article: WikipediaArticle) => {
+    setPreviewArticle(article);
+    setShowPreview(true);
+  };
+
+  const handleClosePreview = () => {
+    setShowPreview(false);
+    setPreviewArticle(null);
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
@@ -82,12 +95,20 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onStartGame }) => {
                   {startArticle.extract}
                 </p>
               )}
-              <button
-                onClick={() => setStartArticle(null)}
-                className="mt-2 text-sm text-green-600 hover:text-green-800 underline"
-              >
-                Change article
-              </button>
+               <div className="flex gap-2 mt-2">
+                 <button
+                   onClick={() => handlePreviewArticle(startArticle)}
+                   className="text-sm text-blue-600 hover:text-blue-800 underline"
+                 >
+                   Preview
+                 </button>
+                 <button
+                   onClick={() => setStartArticle(null)}
+                   className="text-sm text-green-600 hover:text-green-800 underline"
+                 >
+                   Change article
+                 </button>
+               </div>
             </div>
           ) : (
             <div className="space-y-3">
@@ -135,12 +156,20 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onStartGame }) => {
                   {endArticle.extract}
                 </p>
               )}
-              <button
-                onClick={() => setEndArticle(null)}
-                className="mt-2 text-sm text-red-600 hover:text-red-800 underline"
-              >
-                Change article
-              </button>
+               <div className="flex gap-2 mt-2">
+                 <button
+                   onClick={() => handlePreviewArticle(endArticle)}
+                   className="text-sm text-blue-600 hover:text-blue-800 underline"
+                 >
+                   Preview
+                 </button>
+                 <button
+                   onClick={() => setEndArticle(null)}
+                   className="text-sm text-red-600 hover:text-red-800 underline"
+                 >
+                   Change article
+                 </button>
+               </div>
             </div>
           ) : (
             <div className="space-y-3">
@@ -216,6 +245,30 @@ export const GameSetup: React.FC<GameSetupProps> = ({ onStartGame }) => {
           </p>
         )}
       </div>
+
+      {/* Preview Modal */}
+      {showPreview && previewArticle && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
+            <div className="flex justify-between items-center p-4 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-800">Article Preview</h2>
+              <button
+                onClick={handleClosePreview}
+                className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+            <div className="p-4">
+              <WikiViewer
+                articleTitle={previewArticle.title}
+                onLinkClick={() => {}} // Disable link clicking in preview
+                className="max-h-[70vh] overflow-y-auto"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
