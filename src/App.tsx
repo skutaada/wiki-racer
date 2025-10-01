@@ -3,7 +3,8 @@ import { GameSetup } from './components/GameSetup';
 import { GamePlayer } from './components/GamePlayer';
 import { Leaderboard } from './components/Leaderboard';
 import { DailyRace } from './components/DailyRace';
-import { UserRegistration } from './components/UserRegistration';
+import { LoginButton } from './components/LoginButton';
+import { LoginModal } from './components/LoginModal';
 import { useGame } from './hooks/useGame';
 import { useLeaderboard } from './hooks/useLeaderboard';
 import { useDailyRace } from './hooks/useDailyRace';
@@ -17,6 +18,7 @@ function App() {
   const { currentUser, isLoading: userLoading, registerUser, logoutUser } = useUser();
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showDailyRace, setShowDailyRace] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleStartGame = (startArticle: WikipediaArticle, endArticle: WikipediaArticle) => {
     startGame(startArticle, endArticle);
@@ -60,19 +62,20 @@ function App() {
     setShowDailyRace(!showDailyRace);
   };
 
+  const handleToggleLoginModal = () => {
+    setShowLoginModal(!showLoginModal);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {gameState.status === 'setup' ? (
         <div className="py-12">
           <div className="max-w-6xl mx-auto px-6">
-            <UserRegistration
-              currentUser={currentUser}
-              onRegister={registerUser}
-              onLogout={logoutUser}
-              isLoading={userLoading}
-            />
-
             <div className="flex justify-end mb-6 space-x-4">
+              <LoginButton
+                currentUser={currentUser}
+                onToggleModal={handleToggleLoginModal}
+              />
               <button
                 onClick={handleToggleDailyRace}
                 className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
@@ -113,7 +116,16 @@ function App() {
           onGiveUp={handleGiveUp}
           onPlayAgain={handlePlayAgain}
         />
-      )}
+       )}
+
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={handleToggleLoginModal}
+        currentUser={currentUser}
+        onRegister={registerUser}
+        onLogout={logoutUser}
+        isLoading={userLoading}
+      />
     </div>
   );
 }
