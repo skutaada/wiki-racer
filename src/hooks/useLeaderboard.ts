@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { GameStats } from '../types/game';
+import type { GameStats, User } from '../types/game';
 
 export interface LeaderboardEntry {
   id: string;
@@ -7,6 +7,8 @@ export interface LeaderboardEntry {
   endArticle: string;
   stats: GameStats;
   timestamp: number;
+  userId?: string;
+  username?: string;
 }
 
 const LEADERBOARD_KEY = 'wiki-racer-leaderboard';
@@ -35,7 +37,8 @@ export const useLeaderboard = () => {
   const addEntry = useCallback((
     startArticle: string,
     endArticle: string,
-    stats: GameStats
+    stats: GameStats,
+    user?: User
   ) => {
     const newEntry: LeaderboardEntry = {
       id: Date.now().toString(),
@@ -43,6 +46,8 @@ export const useLeaderboard = () => {
       endArticle,
       stats,
       timestamp: Date.now(),
+      userId: user?.id,
+      username: user?.username,
     };
 
     setEntries(prev => {

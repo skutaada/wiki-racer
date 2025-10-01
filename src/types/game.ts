@@ -37,3 +37,20 @@ export interface WikipediaPageContent {
   content: string;
   links: string[];
 }
+
+export interface DailyRace {
+  date: string; // YYYY-MM-DD format
+  startArticle: WikipediaArticle;
+  endArticle: WikipediaArticle;
+  userCompletions: Record<string, {
+    completed: boolean;
+    bestTime?: number;
+    bestClicks?: number;
+  }>;
+}
+
+export interface User {
+  id: string;
+  username: string;
+  createdAt: number;
+}
