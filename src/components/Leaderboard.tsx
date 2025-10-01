@@ -29,7 +29,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
 
   if (displayEntries.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-lg p-6">
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-xl font-bold text-gray-800 mb-4">{title}</h2>
         <p className="text-gray-600 text-center py-8">No races completed yet!</p>
       </div>
@@ -37,7 +37,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-gray-800">{title}</h2>
         {onClear && (

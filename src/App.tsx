@@ -71,24 +71,26 @@ function App() {
       {gameState.status === 'setup' ? (
         <div className="py-12">
           <div className="max-w-6xl mx-auto px-6">
-            <div className="flex justify-end mb-6 space-x-4">
-              <LoginButton
-                currentUser={currentUser}
-                onToggleModal={handleToggleLoginModal}
-              />
-              <button
-                onClick={handleToggleDailyRace}
-                className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
-              >
-                {showDailyRace ? 'Custom Race' : 'Daily Race'}
-              </button>
-              <button
-                onClick={handleToggleLeaderboard}
-                className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600"
-              >
-                {showLeaderboard ? 'Hide Leaderboard' : 'Show Leaderboard'}
-              </button>
-            </div>
+             <div className="max-w-4xl mx-auto">
+               <div className="flex justify-end mb-6 space-x-4">
+                 <LoginButton
+                   currentUser={currentUser}
+                   onToggleModal={handleToggleLoginModal}
+                 />
+                 <button
+                   onClick={handleToggleDailyRace}
+                   className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
+                 >
+                   {showDailyRace ? 'Custom Race' : 'Daily Race'}
+                 </button>
+                 <button
+                   onClick={handleToggleLeaderboard}
+                   className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600"
+                 >
+                   {showLeaderboard ? 'Hide Leaderboard' : 'Show Leaderboard'}
+                 </button>
+               </div>
+             </div>
 
             {showLeaderboard ? (
               <Leaderboard
