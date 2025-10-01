@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { DailyRace, WikipediaArticle, User } from '../types/game';
+import { WikiViewer } from './WikiViewer';
 
 interface DailyRaceComponentProps {
   dailyRace: DailyRace | null;
@@ -16,6 +17,18 @@ export const DailyRaceComponent: React.FC<DailyRaceComponentProps> = ({
   onStartDailyRace,
   onRefresh,
 }) => {
+  const [previewArticle, setPreviewArticle] = useState<WikipediaArticle | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+
+  const handlePreviewArticle = (article: WikipediaArticle) => {
+    setPreviewArticle(article);
+    setShowPreview(true);
+  };
+
+  const handleClosePreview = () => {
+    setShowPreview(false);
+    setPreviewArticle(null);
+  };
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
@@ -72,14 +85,22 @@ export const DailyRaceComponent: React.FC<DailyRaceComponentProps> = ({
           <h2 className="text-xl font-semibold text-green-700 flex items-center">
             <span className="mr-2">🏁</span> Start
           </h2>
-          <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-            <h3 className="font-semibold text-green-800 text-lg">{dailyRace.startArticle.title}</h3>
-            {dailyRace.startArticle.extract && (
-              <p className="text-sm text-green-600 mt-2 line-clamp-3">
-                {dailyRace.startArticle.extract}
-              </p>
-            )}
-          </div>
+           <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+             <h3 className="font-semibold text-green-800 text-lg">{dailyRace.startArticle.title}</h3>
+             {dailyRace.startArticle.extract && (
+               <p className="text-sm text-green-600 mt-2 line-clamp-3">
+                 {dailyRace.startArticle.extract}
+               </p>
+             )}
+             <div className="mt-2">
+               <button
+                 onClick={() => handlePreviewArticle(dailyRace.startArticle)}
+                 className="text-sm text-blue-600 hover:text-blue-800 underline"
+               >
+                 Preview article
+               </button>
+             </div>
+           </div>
         </div>
 
         {/* End Article */}
@@ -87,14 +108,22 @@ export const DailyRaceComponent: React.FC<DailyRaceComponentProps> = ({
           <h2 className="text-xl font-semibold text-red-700 flex items-center">
             <span className="mr-2">🎯</span> Target
           </h2>
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-            <h3 className="font-semibold text-red-800 text-lg">{dailyRace.endArticle.title}</h3>
-            {dailyRace.endArticle.extract && (
-              <p className="text-sm text-red-600 mt-2 line-clamp-3">
-                {dailyRace.endArticle.extract}
-              </p>
-            )}
-          </div>
+           <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+             <h3 className="font-semibold text-red-800 text-lg">{dailyRace.endArticle.title}</h3>
+             {dailyRace.endArticle.extract && (
+               <p className="text-sm text-red-600 mt-2 line-clamp-3">
+                 {dailyRace.endArticle.extract}
+               </p>
+             )}
+             <div className="mt-2">
+               <button
+                 onClick={() => handlePreviewArticle(dailyRace.endArticle)}
+                 className="text-sm text-blue-600 hover:text-blue-800 underline"
+               >
+                 Preview article
+               </button>
+             </div>
+           </div>
         </div>
       </div>
 
@@ -139,6 +168,30 @@ export const DailyRaceComponent: React.FC<DailyRaceComponentProps> = ({
           {currentUser && dailyRace.userCompletions?.[currentUser.id]?.completed && " Can you beat your best time?"}
         </p>
       </div>
+
+      {/* Preview Modal */}
+      {showPreview && previewArticle && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
+            <div className="flex justify-between items-center p-4 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-800">Article Preview</h2>
+              <button
+                onClick={handleClosePreview}
+                className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+            <div className="p-4">
+              <WikiViewer
+                articleTitle={previewArticle.title}
+                onLinkClick={() => {}} // Disable link clicking in preview
+                className="max-h-[70vh] overflow-y-auto"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
